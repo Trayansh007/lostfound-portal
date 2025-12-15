@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found Portal | Home</title>
+    <link rel="stylesheet" href="cdnjs.cloudflare.com" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="container nav-main">
+            <div class="logo">
+                <i class="fas fa-search-location"></i>
+                <h1>Lost & Found</h1>
+            </div>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="report-lost.html">Report Lost</a></li>
+                <li><a href="report-found.html">Report Found</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section hero">
+            <div class="container hero-container">
+                <div class="form-header">
+                    <h2>Reconnecting You With Your Belongings</h2>
+                    <p>Search recently posted items or report your own missing property.</p>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="searchBox" placeholder="Search lost items (e.g., keys, wallet)...">
+                    <button onclick="searchItem()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div class="cta-buttons">
+                    <a href="report-lost.html" class="btn secondary-btn">
+                        <i class="fas fa-frown"></i> I Lost Something
+                    </a>
+                    <a href="report-found.html" class="btn primary-btn">
+                        <i class="fas fa-smile"></i> I Found Something
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section container content-below">
+            <h3><i class="fas fa-list-alt"></i> Recently Reported Items</h3>
+            <div class="cards-grid" id="itemsGrid">
+            </div>
+            <button class="btn load-more-btn" onclick="loadMoreItems()">Load More</button>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; Lost & Found Portal | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
