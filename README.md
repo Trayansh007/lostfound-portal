@@ -24,5 +24,4 @@ The portal includes:
 - A **cards grid** to display reported items dynamically.
 - **Navigation menu** for easy movement across pages.
 - **Footer section** with essential links.
-  
-  -----------------------------Thanks alot--------------------------------------
+
