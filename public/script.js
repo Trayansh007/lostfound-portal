@@ -1,49 +1,120 @@
+const API_URL = "http://localhost:3000";
+
 document.addEventListener('DOMContentLoaded', (event) => {
     loadRecentItems();
 });
+ 
+
+let itemsPerPage = 8;   
+let currentPage = 1;    
+let allItems = [];     
 
 
-const mockItems = [
-    { id: 1, name: 'Brown Leather Wallet', location: 'Near Central Park entrance', date: '2 days ago', status: 'Lost', imageUrl: 'images.unsplash.com' },
-    { id: 2, name: 'Black Umbrella', location: 'Bus Stop 4B', date: '1 day ago', status: 'Found', imageUrl: 'images.unsplash.com' },
-    { id: 3, name: 'Silver Wedding Ring', location: 'Beach shore', date: '3 hours ago', status: 'Lost', imageUrl: 'images.unsplash.com' },
-    { id: 4, name: 'Dog (Golden Retriever)', location: 'Oak Street, near school', date: '5 days ago', status: 'Lost', imageUrl: 'images.unsplash.com' },
-    { id: 5, name: 'Keys on a Batman keychain', location: 'Coffee Shop on Main St.', date: 'Just now', status: 'Found', imageUrl: 'images.unsplash.com' },
-    { id: 6, name: 'Laptop bag (Black)', location: 'Library 3rd floor', date: '4 hours ago', status: 'Found', imageUrl: 'images.unsplash.com' },
-];
-
-function loadRecentItems() {
+async function loadRecentItems() {
     const itemsGrid = document.getElementById('itemsGrid');
-    itemsGrid.innerHTML = ''; 
-    
-    mockItems.forEach(item => {
+    try {
+        const response = await fetch(`${API_URL}/api/items`);
+        if (!response.ok) throw new Error("Server responded with an error");
+
+        allItems = await response.json();  // store all items
+        displayItems(allItems.slice(0, itemsPerPage)); // show first batch
+    } catch (error) {
+        console.error("Fetch error:", error);
+        itemsGrid.innerHTML = `<p>Error loading items. Is the server running?</p>`;
+    }
+}
+
+
+function loadMoreItems() {
+    currentPage++;
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = currentPage * itemsPerPage;
+
+    const nextItems = allItems.slice(start, end);
+
+    if (nextItems.length === 0) {
+        document.querySelector('.load-more-btn').style.display = 'none'; // hide button if no more items
+        return;
+    }
+
+   
+    nextItems.forEach(item => {
+        const itemsGrid = document.getElementById('itemsGrid');
         const itemCard = document.createElement('div');
         itemCard.classList.add('item-card');
+
+        const folder = item.status === 'Lost' ? 'lost' : 'found';
+        const imageSrc = item.imagePath ? `${API_URL}/uploads/${folder}/${item.imagePath}` : 'placeholder.jpg';
+
         itemCard.innerHTML = `
-            <img src="${item.imageUrl}" alt="${item.name}" class="item-card-image">
+            <img src="${imageSrc}" alt="${item.itemName}" class="item-card-image">
             <div class="item-card-content">
-                <h4>${item.name}</h4>
+                <h4>${item.itemName}</h4>
                 <p><strong>Location:</strong> ${item.location}</p>
-                <p><strong>Reported:</strong> ${item.date}</p>
+                <p><strong>Reported:</strong> ${new Date(item.date).toLocaleDateString()}</p>
                 <span class="status-badge status-${item.status.toLowerCase()}">${item.status}</span>
             </div>
         `;
+
         itemCard.addEventListener('click', () => {
-            alert(`Viewing details for: ${item.name}`);
+            alert(`Contact ${item.userName} at ${item.userMobile}`);
+        });
+
+        itemsGrid.appendChild(itemCard);
+    });
+}
+
+
+function displayItems(items) {
+    const itemsGrid = document.getElementById('itemsGrid');
+    itemsGrid.innerHTML = ''; 
+
+    if (items.length === 0) {
+        itemsGrid.innerHTML = '<p>No items found.</p>';
+        return;
+    }
+
+    items.forEach(item => {
+        const itemCard = document.createElement('div');
+        itemCard.classList.add('item-card');
+        
+        
+        const folder = item.status === 'Lost' ? 'lost' : 'found';
+        const imageSrc = item.imagePath ? `${API_URL}/uploads/${folder}/${item.imagePath}` : 'placeholder.jpg';
+
+        itemCard.innerHTML = `
+            <img src="${imageSrc}" alt="${item.itemName}" class="item-card-image">
+            <div class="item-card-content">
+                <h4>${item.itemName}</h4>
+                <p><strong>Location:</strong> ${item.location}</p>
+                <p><strong>Reported:</strong> ${new Date(item.date).toLocaleDateString()}</p>
+                <span class="status-badge status-${item.status.toLowerCase()}">${item.status}</span>
+            </div>
+        `;
+        
+        itemCard.addEventListener('click', () => {
+            alert(`Contact ${item.userName} at ${item.userMobile}`);
         });
         itemsGrid.appendChild(itemCard);
     });
 }
 
-function searchItem() {
-    const query = document.getElementById('searchBox').value;
-    if (query.trim()) {
-        alert(`Searching for items matching: "${query}"`);
-    } else {
-        alert('Please enter a search term.');
-    }
-}
+async function searchItem() {
+    const query = document.getElementById('searchBox').value.toLowerCase();
+    if (!query.trim()) return alert('Please enter a search term.');
 
-function loadMoreItems() {
-    alert('Loading more items... (Functionality to be implemented in a database connection)');
+    try {
+        const response = await fetch(`${API_URL}/api/items`);
+        allItems = await response.json();
+
+        const filtered = allItems.filter(item =>
+            item.itemName.toLowerCase().includes(query) ||
+            item.location.toLowerCase().includes(query)
+        );
+
+        currentPage = 1; // reset pagination
+        displayItems(filtered.slice(0, itemsPerPage));
+    } catch (error) {
+        console.error("Search failed:", error);
+    }
 }

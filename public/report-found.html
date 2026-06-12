@@ -235,13 +235,18 @@
       </div>
 
       <form action="http://localhost:3000/report-found" method="POST" enctype="multipart/form-data">
-        
-        <input type="text" name="itemName" placeholder="Item Name (e.g., Watch, Bag)" required>
-        <textarea name="description" placeholder="Detailed Description (color, brand, unique features)" required></textarea>
-        <input type="text" name="location" placeholder="Location where you found it" required>
-        <input type="file" name="itemImage" accept="image/*">
-        <button type="submit">Submit Found Report</button>
-      </form>
+    <input type="text" name="itemName" placeholder="Item Name (e.g., Watch, Bag)" required>
+    <textarea name="description" placeholder="Detailed Description (color, brand, unique features)" required></textarea>
+    <input type="text" name="location" placeholder="Location where you found it" required>
+
+    <input type="text" name="userName" placeholder="Your Full Name" required>
+    <input type="tel" name="userMobile" placeholder="Mobile Number (10 Digits)" 
+           pattern="[0-9]{10}" 
+           title="Please enter a valid 10-digit mobile number" required>
+
+    <input type="file" name="itemImage" accept="image/*">
+    <button type="submit">Submit Found Report</button>
+</form>
     </div>
   </section>
   <footer>
